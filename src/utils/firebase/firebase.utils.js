@@ -1,11 +1,5 @@
-import { async } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  signInWithRedirect,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -23,14 +17,15 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig); //--> This is not optional. Firebase needs to get initialized
 //   const analytics = getAnalytics(firebaseApp);  /-->this is optional
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({
+googleProvider.setCustomParameters({
   prompt: "select_account",
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () =>
+  signInWithPopup(auth, googleProvider);
 
 // --------From google firebase documentation-------------------------
 //
@@ -67,7 +62,11 @@ export const createUserDocumentFromAuth = async (userAuth) => {
   if (!userSnapShot.exists()) {
     const createdAt = new Date();
     try {
-      await setDoc(userDocRef, { email, displayName, createdAt });
+      await setDoc(userDocRef, {
+        email: email,
+        displayName: displayName,
+        createdAt: createdAt,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -75,3 +74,5 @@ export const createUserDocumentFromAuth = async (userAuth) => {
 
   return userDocRef;
 };
+
+// Firestore
